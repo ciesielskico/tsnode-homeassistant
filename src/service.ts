@@ -8,9 +8,13 @@ import {
 } from './declarations';
 import { HomeAssistant } from './home-assistant';
 import { toggleServiceActionType } from './util';
+import { HomeAssistantConnection } from './util/connection';
 
 export class HomeAssistantService {
-  constructor(private hass: HomeAssistant) {}
+  constructor(
+    private hass: HomeAssistant,
+    private connection: HomeAssistantConnection,
+  ) {}
 
   /**
    * Call service
@@ -42,7 +46,7 @@ export class HomeAssistantService {
       pack.service_data = serviceDataOrEntity;
     }
 
-    return this.hass.sendWithIdAndResult(pack);
+    return this.connection.send(pack);
   }
 
   /**

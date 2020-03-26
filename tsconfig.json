@@ -19,10 +19,9 @@
     "declarationMap": true,
     "inlineSourceMap": true,
     "inlineSources": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true
   },
-  "exclude": [
-    "node_modules",
-    "example"
-  ]
+  "exclude": ["node_modules", "example", "dist"]
 }

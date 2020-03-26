@@ -10,13 +10,17 @@ import {
   IHASubscribeToEvent,
 } from './declarations';
 import { HomeAssistant } from './home-assistant';
+import { HomeAssistantConnection } from './util/connection';
 
 export class HomeAssistantEvents {
   private subMapName: { [eventType: string]: IEventSubscriptionEntry } = {};
   private subMapId: { [id: number]: IEventSubscriptionEntry } = {};
 
-  constructor(private hass: HomeAssistant) {
-    this.hass.wsMessage$
+  constructor(
+    private hass: HomeAssistant,
+    private connection: HomeAssistantConnection,
+  ) {
+    this.connection.wsMessage$
       .pipe(
         filter(
           ($event: IHAMessageEvent) => $event.type === HAMessageType.Event,
@@ -24,19 +28,19 @@ export class HomeAssistantEvents {
       )
       .subscribe($event => this.handleEventMessage($event));
 
-    this.hass.connectionStatus$
+    this.connection.connectionStatus$
       .pipe(filter(status => status === HAConnectionStatus.Ready))
       .subscribe(() => this.reSubscribe());
   }
 
   list() {
-    // todo
+    throw new Error('Not yet implemented');
   }
 
   select<T = any>(eventType: string): Observable<IHAEvent<T>> {
     if (!this.subMapName[eventType]) {
       const entry: IEventSubscriptionEntry = {
-        id: this.hass.getNextId(),
+        id: this.connection.getNextId(),
         type: eventType,
         obs: new Subject<IHAEvent<T>>(),
       };
@@ -51,7 +55,7 @@ export class HomeAssistantEvents {
   }
 
   fire(eventType: string, eventData?: any) {
-    // todo
+    throw new Error('Not yet implemented');
   }
 
   /**
@@ -69,7 +73,7 @@ export class HomeAssistantEvents {
       pack.event_type = entry.type;
     }
 
-    return this.hass.sendWithIdAndResult(pack);
+    return this.connection.send(pack);
   }
 
   /**
@@ -81,7 +85,7 @@ export class HomeAssistantEvents {
     this.subMapId = {};
 
     eventEntries.forEach(entry => {
-      entry.id = this.hass.getNextId();
+      entry.id = this.connection.getNextId();
 
       this.subMapId[entry.id] = entry;
 

@@ -14,13 +14,17 @@ import { HAEntityBinary } from './entities/HAEntityBinary';
 import { HAEntityLight } from './entities/HAEntityLight';
 import { HAEntitySwitch } from './entities/HAEntitySwitch';
 import { HomeAssistant } from './home-assistant';
+import { HomeAssistantConnection } from './util/connection';
 
 export class HomeAssistantEntities {
   onChange = new Subject<IHAEntityBase>();
 
   private entities: { [id: string]: HAEntityBase } = {};
 
-  constructor(private hass: HomeAssistant) {
+  constructor(
+    private hass: HomeAssistant,
+    private connection: HomeAssistantConnection,
+  ) {
     this.hass.events
       .select('state_changed')
       .subscribe(data => this.handleHAStateChange(data));
@@ -30,8 +34,8 @@ export class HomeAssistantEntities {
    * Fetch and set states
    */
   fetchEntities(): Observable<HAEntityBase[]> {
-    return this.hass
-      .sendWithIdAndResult({
+    return this.connection
+      .send({
         type: HAMessageType.GetStates,
       })
       .pipe(

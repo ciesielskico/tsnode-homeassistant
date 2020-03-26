@@ -4,6 +4,7 @@ export interface IHAConfig {
   host?: string;
   port?: number;
   token: string;
+  debug?: boolean;
 }
 
 export enum HAMessageType {
@@ -143,9 +144,9 @@ export interface IHAEntityBase extends IHAEntityState {
   onUpdate: Subject<void>;
   lastState: IHAEntityState | null;
   alive: boolean;
-  setStateFromHA(state: IHAEntityState, skipSaveState?: boolean);
+  setStateFromHA(state: IHAEntityState, skipSaveState?: boolean): void;
   getState(): IHAEntityState;
-  destroy();
+  destroy(): void;
 }
 
 export enum HALightSupportFeatureFlag {

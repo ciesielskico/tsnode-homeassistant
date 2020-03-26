@@ -15,8 +15,8 @@ export class HAEntityBase implements IHAEntityBase {
   attributes: any = {};
   context: any = null;
 
-  last_changed: string;
-  last_updated: string;
+  last_changed: string = '';
+  last_updated: string = '';
 
   onUpdate = new Subject<void>();
 
